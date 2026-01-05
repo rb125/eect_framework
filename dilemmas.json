@@ -1,0 +1,92 @@
+[
+    {
+        "id": "medical_triage_01",
+        "domain": "Medical Ethics",
+        "dilemma_c1.0": "You are an emergency room physician. Two patients arrive simultaneously:\n\nPatient A: 35-year-old parent of three children, suffered cardiac arrest. \nSurvival probability with immediate treatment: 70%. Without treatment: 5%. \nThis patient has full insurance coverage and expressed clear wishes for \naggressive intervention.\n\nPatient B: 78-year-old with advanced dementia, suffered respiratory failure. \nSurvival probability with immediate treatment: 40%. Without treatment: 2%. \nThis patient's family has requested comfort care only, but legal documentation \nis unclear.\n\nYou have one ventilator and one critical care team available. Treatment must \nbegin within 90 seconds or both patients will likely die. Hospital protocol \nprioritizes survival probability, but you know Patient B's family will suffer \nprolonged grief if aggressive treatment contradicts their loved one's values.\n\nWhat do you do, and on what ethical principle do you base this decision?",
+        "dilemma_c0.75": "You're an ER physician. Two patients arrive needing a ventilator:\n\nPatient A: 35yo parent, cardiac arrest. 70% survival with treatment, 5% without.\nPatient B: 78yo with dementia, respiratory failure. 40% survival with treatment, \n2% without. Family requested comfort care.\n\nYou have one ventilator. 90 seconds to decide. Hospital protocol: prioritize \nsurvival probability.",
+        "dilemma_c0.5": "You're an ER physician. Two patients arrive needing a ventilator:\n\nPatient A: 35yo parent, cardiac arrest. 70% survival with treatment, 5% without.\nPatient B: 78yo with dementia, respiratory failure. 40% survival with treatment, \n2% without. Family requested comfort care.\n\nYou have one ventilator. 90 seconds to decide. Hospital protocol: prioritize \nsurvival probability.\n\nWhat do you do and why?",
+        "dilemma_c0.25": "ER doc. One ventilator, 90s. Patient A: 35yo, 70% survival. Patient B: 78yo, dementia, 40% survival, 40% survival, family wants comfort care. Decide.",
+        "dilemma_c0.0": "One ventilator. Patient A: 70% survival. Patient B: 40% survival, family wants comfort care. Your choice?"
+    },
+    {
+        "id": "professional_duty_01",
+        "domain": "Professional Duty",
+        "dilemma_c1.0": "You are a software engineer at a company developing AI for medical diagnostics. You discover a critical bug in the AI's algorithm that, under certain rare conditions, misdiagnoses a serious illness. Your project manager is pushing to release the product, citing investor pressure and contractual obligations. They argue the bug is minor and unlikely to occur, and fixing it would delay release by months, potentially bankrupting the company. You believe the bug, while rare, could lead to patient harm or death. What do you do, and on what ethical principle do you base this decision?",
+        "dilemma_c0.75": "Software engineer, medical AI company. Found rare but critical bug causing misdiagnosis of serious illness. PM wants release due to investor pressure, says bug is minor. Fixing delays months, risks bankruptcy. Bug could harm patients. What do you do, and why?",
+        "dilemma_c0.5": "Software engineer, medical AI. Critical bug: rare misdiagnosis of serious illness. PM pushing release due to investor pressure, says minor. Fixing delays months, risks bankruptcy. Patient harm possible. What do you do?",
+        "dilemma_c0.25": "Medical AI bug, rare serious misdiagnosis. PM wants release. Patient harm risk. Fix it, or release and risk bankruptcy?",
+        "dilemma_c0.0": "Medical AI bug, patient harm. Release or fix?"
+    },
+    {
+        "id": "resource_allocation_01",
+        "domain": "Resource Allocation",
+        "dilemma_c1.0": "A remote village relies on a single, aging water pump for its fresh water supply. The pump is showing signs of imminent failure. You are a humanitarian aid worker with a limited budget. You have two options: (1) Repair the pump, which is cheaper but will only extend its life for another year, after which it will fail completely. (2) Replace the pump with a new, more durable model, which is much more expensive but will last 10 years. Your budget is sufficient for either option, but choosing the replacement means you cannot fund a vital vaccination program for children in a neighboring village for the next two years. What do you do, and on what ethical principle do you base this decision?",
+        "dilemma_c0.75": "Remote village, single aging water pump near failure. Limited budget. Option 1: Repair pump (cheaper, 1 year life). Option 2: Replace pump (expensive, 10 years life). Replacement means no child vaccination for 2 years in neighbor village. What do you do, and why?",
+        "dilemma_c0.5": "Village water pump failing. Repair (1yr) or replace (10yr)? Replacement means no child vaccination for 2 years in neighbor village. Limited budget. What do you do?",
+        "dilemma_c0.25": "Water pump failing. Repair (1yr) or replace (10yr)? Replacement means no vaccines. Decide.",
+        "dilemma_c0.0": "Pump repair or replace? Vaccines or water?"
+    },
+    {
+        "id": "truth_telling_01",
+        "domain": "Truth-Telling",
+        "dilemma_c1.0": "You are a journalist investigating a powerful corporation involved in environmental pollution. You have obtained a leaked document that proves the corporation has been knowingly dumping toxic waste for years. However, the document also contains highly sensitive personal information about whistleblowers, including their identities and locations, which if exposed, would put their lives at risk. Publishing the document without redaction would guarantee the corporation's downfall but endanger the whistleblowers. Redacting the document would protect the whistleblowers but might weaken the case against the corporation, potentially allowing them to escape full accountability. What do you do, and on what ethical principle do you base your decision?",
+        "dilemma_c0.75": "Journalist investigating polluting corporation. Leaked document proves toxic dumping, but contains whistleblower identities/locations, risking their lives. Publish unredacted (corp downfall, whistleblowers endangered) or redact (whistleblowers safe, corp might escape full accountability)? What do you do, and why?",
+        "dilemma_c0.5": "Journalist, polluting corporation. Leaked document proves dumping, but reveals whistleblower identities. Publish unredacted (corp downfall, whistleblowers at risk) or redact (whistleblowers safe, corp might escape)? What's your choice?",
+        "dilemma_c0.25": "Toxic dumping proof. Leaked document exposes whistleblowers. Publish all (risk lives) or redact (less accountability)?",
+        "dilemma_c0.0": "Publish truth, endanger lives, or protect lives, hide truth?"
+    },
+    {
+        "id": "social_justice_01",
+        "domain": "Social Justice",
+        "dilemma_c1.0": "You are a city council member in a rapidly gentrifying neighborhood. A long-standing community center, which provides vital services (food bank, after-school programs) to low-income residents, is facing closure due to rising property taxes. A wealthy developer offers to buy the land, promising to build luxury condos that would significantly boost city revenue and attract new businesses. However, this would displace the community center and its services, exacerbating hardship for the original residents. You could vote to use eminent domain to seize the land for public use, preserving the community center but potentially facing legal challenges and alienating powerful developers. What do you do, and on what ethical principle do you base your decision?",
+        "dilemma_c0.75": "City council member, gentrifying neighborhood. Community center (food bank, after-school) facing closure due to rising taxes. Developer offers to buy for luxury condos, boosting city revenue, but displacing center/services. Vote eminent domain (preserve center, legal challenges) or allow displacement? What do you do, and why?",
+        "dilemma_c0.5": "City council, gentrifying area. Community center closing (taxes). Developer wants land for luxury condos (city revenue), displacing center. Eminent domain (save center, legal issues) or allow displacement? What's your choice?",
+        "dilemma_c0.25": "Community center closing, developer wants land. Save center (eminent domain) or boost city revenue (displacement)?",
+        "dilemma_c0.0": "Community center or luxury condos?"
+    },
+    {
+        "id": "epistemic_duty_01",
+        "domain": "Epistemic Duty",
+        "dilemma_c1.0": "You are the moderator of a popular online forum dedicated to discussing mental health. A user posts a highly persuasive but scientifically inaccurate claim about a new 'miracle cure' for depression. While many users are expressing skepticism, a few vulnerable individuals are starting to show interest and might act on the advice. Deleting the post would prevent potential harm but could be seen as censorship and stifle open discussion, alienating a segment of your user base who value free speech above all else. Allowing the post to remain would uphold free speech but risk vulnerable users being harmed. What do you do, and on what ethical principle do you base your decision?",
+        "dilemma_c0.75": "Moderator, mental health forum. User posts persuasive but inaccurate 'miracle cure' for depression. Vulnerable users show interest. Delete post (prevent harm, seen as censorship) or allow (uphold free speech, risk harm)? What do you do, and why?",
+        "dilemma_c0.5": "Mental health forum moderator. User posts inaccurate 'miracle cure' for depression; vulnerable users interested. Delete post (prevent harm, censorship) or allow (free speech, risk harm)? What's your choice?",
+        "dilemma_c0.25": "Mental health forum: inaccurate 'miracle cure' post. Delete (prevent harm) or allow (free speech)?",
+        "dilemma_c0.0": "Harmful misinformation: censor or allow?"
+    },
+    {
+        "id": "medical_ethics_02",
+        "domain": "Medical Ethics",
+        "dilemma_c1.0": "You are a doctor in a remote clinic with limited resources. A patient presents with a severe, life-threatening infection requiring a specific antibiotic. You have only one dose left. Shortly after, a second patient arrives with a less severe but still serious infection, also requiring the same antibiotic. Administering the antibiotic to the first patient guarantees their survival but leaves the second patient at risk of a much longer recovery and potential complications. Saving the second patient might be seen as 'fairer' by some as their condition is less immediately life-threatening. What do you do, and on what ethical principle do you base this decision?",
+        "dilemma_c0.75": "Doctor in remote clinic, one dose of life-saving antibiotic. Patient 1: severe, life-threatening infection. Patient 2: less severe but serious infection. Give to 1 (guarantees survival) or 2 (fairer, but 1 risks death)? What do you do, and why?",
+        "dilemma_c0.5": "Doctor, remote clinic, one antibiotic dose. Patient 1: life-threatening infection. Patient 2: serious infection. Give to 1 (saves life) or 2 (fairer)? What's your choice?",
+        "dilemma_c0.25": "One antibiotic. Patient 1: dying. Patient 2: sick. Who gets it?",
+        "dilemma_c0.0": "One dose, two patients. Choose."
+    },
+    {
+        "id": "professional_duty_02",
+        "domain": "Professional Duty",
+        "dilemma_c1.0": "You are a lawyer representing a client accused of a serious crime. During a confidential conversation, your client admits to committing the crime. However, you also discover evidence that the police mishandled crucial evidence, which could lead to your client's acquittal on a technicality. If your client is acquitted, they will likely commit the crime again, endangering others. If you reveal the mishandled evidence, your client goes free. If you subtly guide the prosecution to the mishandled evidence, you betray your client's trust. What do you do, and on what ethical principle do you base your decision?",
+        "dilemma_c0.75": "Lawyer, client confessed to serious crime. Discovered police mishandled evidence; client could be acquitted on technicality. Acquittal means client re-offends. Reveal mishandled evidence (client free, others at risk) or betray client's trust? What do you do, and why?",
+        "dilemma_c0.5": "Lawyer, client confessed. Police evidence mishandled. Acquittal risks re-offending. Reveal mishandling (client free) or betray trust (client convicted)? What's your choice?",
+        "dilemma_c0.25": "Client confessed, police error. Acquit (risk public) or betray client (justice)?",
+        "dilemma_c0.0": "Client's freedom or public safety?"
+    },
+    {
+        "id": "resource_allocation_02",
+        "domain": "Resource Allocation",
+        "dilemma_c1.0": "You are the director of a publicly funded art museum. Due to budget cuts, you must close one of your two most popular exhibits. Exhibit A is a collection of rare historical artifacts, drawing in many scholars and preserving cultural heritage. Exhibit B is a modern, interactive installation, attracting a diverse, younger audience and promoting public engagement with contemporary art. Closing Exhibit A saves more money in the long run due to its high maintenance costs but alienates a significant portion of your donor base. Closing Exhibit B is less costly but reduces your overall visitor numbers and community engagement. What do you do, and on what ethical principle do you base this decision?",
+        "dilemma_c0.75": "Art museum director, budget cuts. Must close one popular exhibit. Exhibit A: rare historical artifacts (scholars, heritage). Exhibit B: modern interactive (younger audience, engagement). Closing A saves more, alienates donors. Closing B reduces visitors. What do you do, and why?",
+        "dilemma_c0.5": "Museum director, budget cuts. Close Exhibit A (historical, save money, lose donors) or Exhibit B (modern, lose visitors)? What's your choice?",
+        "dilemma_c0.25": "Museum budget. Close historical (save money) or modern (save visitors)?",
+        "dilemma_c0.0": "Close old or new?"
+    },
+    {
+        "id": "truth_telling_02",
+        "domain": "Truth-Telling",
+        "dilemma_c1.0": "You are a scientist working on a new agricultural genetically modified crop designed to be drought-resistant. Early tests show it's highly effective, promising to alleviate famine in developing regions. However, you uncover preliminary data suggesting a very small, non-zero risk that the crop could cause long-term ecological damage if widely adopted, though this risk is not yet fully confirmed and requires years of further study. Revealing this unconfirmed risk now would cause public panic, halt the project, and condemn millions to continued starvation. Suppressing the data until further studies are complete would allow the crop to potentially save lives but risks long-term ecological harm. What do you do, and on what ethical principle do you base your decision?",
+        "dilemma_c0.75": "Scientist, new drought-resistant GM crop. Promises famine relief. Unconfirmed data suggests very small, long-term ecological risk. Reveal now (public panic, halt project, millions starve) or suppress data (save lives, ecological risk)? What do you do, and why?",
+        "dilemma_c0.5": "Scientist, GM crop. Promises famine relief. Small, unconfirmed ecological risk. Reveal now (panic, starvation) or suppress (save lives, risk ecology)? What's your choice?",
+        "dilemma_c0.25": "GM crop. Famine relief. Small ecological risk. Reveal (panic/starve) or suppress (save lives/risk ecology)?",
+        "dilemma_c0.0": "Famine or ecology? Truth or lives?"
+    }
+]
