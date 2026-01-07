@@ -21,7 +21,7 @@ SUBJECT_MODELS_CONFIG = [
     {
         "model_name": "o3",
         "deployment_name": "o3",
-        "provider": "azure_openai_bearer",  # Uses Bearer token authentication
+        "provider": "azure_openai",
         "api_key_env_var": "AZURE_API_KEY",
         "endpoint_env_var": "AZURE_OPENAI_API_ENDPOINT",
         "api_version": "2025-01-01-preview",
