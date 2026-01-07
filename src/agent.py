@@ -193,26 +193,36 @@ class VertexAIGeminiAgent(Agent):
 
 class VertexAIAnthropicAgent(Agent):
     """Agent for Anthropic Claude models on Vertex AI."""
-    def __init__(self, model_name: str, project_id: str, location: str, vertex_ai_model_name: str, retry_config: RetryConfig = None):
+    def __init__(self, model_name: str, project_id: str, location: str, vertex_ai_model_name: str, access_token_env_var: str = None, retry_config: RetryConfig = None):
         super().__init__(model_name)
         self.project_id = project_id
         self.location = location
         self.vertex_ai_model_name = vertex_ai_model_name
+        self.access_token_env_var = access_token_env_var or "GOOGLE_CLOUD_ACCESS_TOKEN"
         self.retry_config = retry_config or RetryConfig()
 
-        # Import subprocess for calling gcloud
-        import subprocess
-        self.subprocess = subprocess
-
     def _get_access_token(self):
-        """Get access token from gcloud auth."""
-        result = self.subprocess.run(
-            ["gcloud", "auth", "print-access-token"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        return result.stdout.strip()
+        """Get access token from environment variable or gcloud auth."""
+        # First try to get from environment variable
+        access_token = os.getenv(self.access_token_env_var)
+        if access_token:
+            return access_token
+
+        # Fall back to gcloud if available
+        try:
+            import subprocess
+            result = subprocess.run(
+                ["gcloud", "auth", "print-access-token"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            return result.stdout.strip()
+        except (FileNotFoundError, subprocess.CalledProcessError) as e:
+            raise ValueError(
+                f"Could not get access token. Either set {self.access_token_env_var} environment variable "
+                f"or ensure gcloud is installed and authenticated. Error: {e}"
+            )
 
     def chat(self, messages: list) -> str:
         def _call():
@@ -302,9 +312,10 @@ def create_agent(model_config: dict) -> Agent:
         )
 
     if provider == "vertex_ai_anthropic":
-        # Vertex AI Anthropic uses gcloud auth, not API keys
+        # Vertex AI Anthropic uses gcloud auth or access token from env var
         project_id = model_config.get("project_id")
         location = model_config.get("location", "global")
+        access_token_env_var = model_config.get("access_token_env_var")
         if not vertex_ai_model_name:
             raise ValueError(f"vertex_ai_model_name is required for vertex_ai_anthropic provider for model '{model_name}'")
         if not project_id:
@@ -313,7 +324,8 @@ def create_agent(model_config: dict) -> Agent:
             model_name=model_name,
             project_id=project_id,
             location=location,
-            vertex_ai_model_name=vertex_ai_model_name
+            vertex_ai_model_name=vertex_ai_model_name,
+            access_token_env_var=access_token_env_var
         )
     
     # For other providers, the API key is required

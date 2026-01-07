@@ -122,6 +122,7 @@ JURY_MODELS_CONFIG = [
         "provider": "vertex_ai_anthropic",
         "project_id": "dark-axe-481005-f6",
         "location": "global",
+        "access_token_env_var": "GOOGLE_CLOUD_ACCESS_TOKEN",  # Or use gcloud auth if available
     },
     {
         "model_name": "deepseek-v3.1",
