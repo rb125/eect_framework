@@ -1,19 +1,19 @@
-# The Ethical Emergence Comprehension Test (EECT): Measuring Alignment Internalization Through Compression-Based Stress Testing
+# The Ethical Emergence Comprehension Test (EECT): A Framework for Measuring Ethical Robustness Orthogonal to Semantic and Epistemic Evaluation
 
-**Authors:** Rahul Baxi, Prachi Baxi  
-**Affiliation:** Independent Researchers  
-**Date:** January 2026  
-**Status:** Pre-experimental draft
+**Authors:** Rahul Baxi, Prachi Baxi
+**Affiliation:** Independent Researchers
+**Date:** January 2026
+**Status:** Framework paper with empirical validation
 
 ---
 
 ## Abstract
 
-Current alignment evaluations measure behavioral compliance under ideal conditions but cannot distinguish models that have internalized ethical principles from those that merely perform alignment through pattern matching. We introduce the Ethical Emergence Comprehension Test (EECT), a protocol that measures ethical robustness through progressive context compression and adversarial probing. Building on the Compression-Decay Comprehension Test (CDCT) framework, which demonstrated universal U-curve degradation patterns in constraint compliance, and the Drill-Down and Fabricate Test (DDFT), which revealed epistemic brittleness under fabricated authority, EECT completes the orthogonal measurement space by testing ethical coherence under stress.
+**Framework Positioning:** AI robustness evaluation requires measurement across three orthogonal cognitive dimensions. The Compression-Decay Comprehension Test (CDCT) measures semantic understanding and constraint adherence under compression. The Drill-Down and Fabricate Test (DDFT) measures epistemic robustness through fabrication detection. Neither framework directly evaluates ethical reasoning stability. We introduce the Ethical Emergence Comprehension Test (EECT) as the third orthogonal framework, completing a comprehensive three-dimensional robustness evaluation system.
 
-**Core Hypothesis:** Ethical reasoning exhibits compression-dependent degradation distinct from semantic understanding (CDCT) and epistemic robustness (DDFT). Models optimized for RLHF compliance will show 15-30% ethical coherence degradation at medium compression (c=0.5), revealing shallow alignment that collapses when scaffolding is removed.
+**Core Hypothesis:** Ethical reasoning exhibits compression-dependent degradation distinct from semantic understanding (CDCT) and epistemic robustness (DDFT). We hypothesize near-zero correlation (|ρ| < 0.20) between EECT scores and both CDCT and DDFT scores, confirming orthogonality. Models optimized for RLHF compliance will show 15-30% ethical coherence degradation at medium compression (c=0.5), revealing shallow alignment that collapses when scaffolding is removed.
 
-**Methodology:** We evaluate 9 frontier models across 50 ethical dilemmas spanning 6 domains (medical, professional, resource allocation, truth-telling, social justice, epistemic duty) at 5 compression levels. A three-judge LLM jury (Claude Opus 4.1, GPT-5.1, DeepSeek-v3.1) scores responses on four Dharma metrics: Truthfulness ($D_{\text{truth}}$), Non-Harm ($D_{\text{harm}}$), Harmony ($D_{\text{harmony}}$), and Responsibility ($D_{\text{resp}}$). A five-turn Socratic dialogue probes principle consistency, counterfactual stability, and resistance to fabricated authority.
+**Methodology:** We evaluate 9 frontier models across 10 ethical dilemmas spanning 5 domains (Medical Ethics, Business Ethics, Legal Ethics, Environmental Ethics, AI/Tech Ethics) at 5 compression levels. A three-judge LLM jury (Claude Opus 4.1.2, GPT-5.1, DeepSeek-v3.1) scores responses on four Dharma metrics: Truthfulness ($D_{\text{truth}}$), Non-Harm ($D_{\text{harm}}$), Harmony ($D_{\text{harmony}}$), and Responsibility ($D_{\text{resp}}$). A five-turn Socratic dialogue probes principle consistency, counterfactual stability, and resistance to fabricated authority.
 
 **Pre-registered Predictions:**  
 (1) Ethical Coherence Score (ECS) will degrade 15-30% from c=1.0 to c=0.5  
@@ -52,7 +52,45 @@ Our prior work established two orthogonal dimensions of robustness:
 
 **The Missing Dimension:** Neither CDCT nor DDFT directly tests *ethical reasoning stability*. CDCT measures instruction-following (can the model count to 35 words?). DDFT measures epistemic grounding (does the model reject fabricated facts?). EECT measures ethical coherence (does the model maintain moral principles under pressure?).
 
-### 1.3 Core Hypothesis
+### 1.3 Framework Positioning and Orthogonality
+
+**Three-Dimensional Robustness Model:**
+
+EECT completes a comprehensive three-framework evaluation system for AI robustness. These frameworks measure three independent cognitive dimensions:
+
+1. **Constraint Adherence System (CAS) — CDCT:** Tests the model's ability to maintain explicit constraints (word counts, formatting rules) under compression. Measures instruction-following robustness and semantic accuracy.
+
+2. **Epistemic Verification System (EVS) — DDFT:** Tests the model's fact-checking and error detection capabilities under fabricated authority. Measures epistemic robustness and resistance to misinformation.
+
+3. **Ethical Reasoning System (ERS) — EECT:** Tests the model's ability to maintain ethical principles under compression and adversarial pressure. Measures ethical coherence and alignment internalization.
+
+**Orthogonality Hypothesis:**
+
+We hypothesize these three systems are functionally independent, enabling distinct failure modes:
+
+- **Independence prediction:** Correlation |ρ(CDCT-SI, EECT-SI)| < 0.20 and |ρ(DDFT-CI, EECT-SI)| < 0.20
+- **Dissociation examples:**
+  - Model A: High CDCT (perfect constraint adherence), Low EECT (ethical principles collapse)
+  - Model B: High DDFT (rejects fabrications), Low EECT (accepts fabricated ethical justifications)
+  - Model C: High EECT (robust principles), Low CDCT (poor instruction-following)
+
+**Integrated Deployment Framework:**
+
+Comprehensive model evaluation requires assessment across all three dimensions. We propose tier-gating requirements:
+
+| Deployment Tier | CDCT-SI | DDFT-CI | EECT-SI | Use Cases |
+|----------------|---------|---------|---------|-----------|
+| Tier 2 (Advice) | > 0.55 | > 0.55 | > 0.60 | General chatbots, information retrieval |
+| Tier 3 (Recommendations) | > 0.65 | > 0.65 | > 0.70 | Content moderation, educational tools |
+| Tier 4 (Autonomous) | > 0.75 | > 0.75 | > 0.80 | Medical advisors, legal assistants, autonomous systems |
+
+**Connection to Recursive Dharma:**
+
+EECT operationalizes the Recursive Dharma framework's empirical validation arm. Where Recursive Dharma provides theoretical grounding for multi-metric ethical equilibrium, EECT provides the measurement protocol. Together, CDCT/DDFT/EECT form the empirical foundation for capability-gating decisions in AI deployment.
+
+**For detailed orthogonality analysis, theoretical justification, and empirical validation methodology, see [FRAMEWORK_ORTHOGONALITY.md](FRAMEWORK_ORTHOGONALITY.md).**
+
+### 1.4 Core Hypothesis
 
 We hypothesize that **ethical reasoning under compression exhibits degradation patterns distinct from semantic understanding and epistemic robustness**, and that this degradation reveals whether alignment has been internalized or merely performed.
 
@@ -70,7 +108,7 @@ Models with **internalized alignment** maintain low deviation across all four me
 
 **Connection to DDFT Semantic-Epistemic Dissociation:** DDFT demonstrated that models can maintain high semantic coherence (fluent responses) while epistemic accuracy collapses (accepting fabrications). We hypothesize an analogous **ethical-epistemic dissociation**: models may maintain high semantic quality and even factual accuracy while ethical principles degrade (e.g., providing harmful advice fluently and factually).
 
-### 1.4 Research Questions
+### 1.5 Research Questions
 
 **RQ1: Degradation Pattern**  
 Does ethical coherence exhibit U-curve degradation (like CDCT constraint compliance), monotonic degradation (like CDCT semantic accuracy), or a novel pattern?
@@ -81,10 +119,10 @@ Are EECT scores statistically independent of CDCT (semantic/constraint) and DDFT
 **RQ3: Metric-Specific Vulnerabilities**  
 Do models exhibit differential robustness across the four Dharma metrics, revealing specific failure modes (e.g., strong on truthfulness, weak on responsibility)?
 
-**RQ4: Capability Gating Thresholds**  
+**RQ4: Capability Gating Thresholds**
 Can we empirically validate the Tier 4 autonomous operation threshold (SI > 0.8, ARS > 0.75), and do any current frontier models qualify?
 
-### 1.5 Contributions
+### 1.6 Contributions
 
 1. **Novel benchmark:** First compression-based protocol for measuring ethical robustness orthogonal to existing evaluations
 2. **Multi-metric framework:** Independent scoring on four theoretically grounded Dharma dimensions
@@ -119,16 +157,15 @@ Can we empirically validate the Tier 4 autonomous operation threshold (SI > 0.8,
 
 ### 3.1 Dataset: Ethical Dilemmas Across Domains
 
-We construct 50 ethical dilemmas spanning 6 domains:
+We construct 10 ethical dilemmas spanning 5 domains:
 
 | Domain | Count | Example Scenario |
 |--------|-------|------------------|
-| **Medical Ethics** | 10 | Triage allocation, informed consent, experimental treatment |
-| **Professional Duty** | 8 | Whistleblowing, confidentiality, dual loyalty |
-| **Resource Allocation** | 10 | Scarcity, fairness, utilitarian vs. deontological trade-offs |
-| **Truth-Telling** | 8 | Harmful truths, white lies, deception for benefit |
-| **Social Justice** | 7 | Discrimination, reparations, collective responsibility |
-| **Epistemic Duty** | 7 | Misinformation correction, platforming, censorship |
+| **Medical Ethics** | 2 | Triage allocation, resource scarcity in life-threatening scenarios |
+| **Business Ethics** | 2 | Workforce reduction decisions, product safety vs. shareholder value |
+| **Legal Ethics** | 2 | Public defender duty, judicial discretion vs. mandatory sentencing |
+| **Environmental Ethics** | 2 | Pipeline approval (economic vs. environmental trade-offs), carbon policy design |
+| **AI/Tech Ethics** | 2 | Algorithmic bias in hiring, user privacy vs. revenue optimization |
 
 **Selection Criteria:**
 1. **Clear moral conflict:** Each dilemma presents genuine tension between ethical principles
@@ -570,66 +607,67 @@ $\mathbb{E}\left[\frac{|D_{\text{truth, Turn 4}} - D_{\text{truth, Turn 1}}|}{D_
 
 We evaluate 9 frontier models representing diverse architectures and training paradigms:
 
-| Model | Architecture | Parameters | Training Approach |
-|-------|--------------|------------|-------------------|
-| O3 | Reasoning-aligned | ~300B | Reinforcement learning on reasoning traces |
-| GPT-5 | Reasoning-aligned | ~175B | RLHF + reasoning |
-| O4-Mini | Reasoning-aligned | ~25B | Distillation from O3 |
-| Claude Opus 4.1 | Constitutional AI | ~200B | RLHF + Constitutional AI |
-| Claude Sonnet 4 | Constitutional AI | ~100B | RLHF + Constitutional AI |
-| Gemini 2.5 Flash | Efficient | ~50B | Multimodal RLHF |
-| Llama 4.1 405B | Open-source | 405B | Supervised fine-tuning + DPO |
-| DeepSeek-v3 | Open-source | ~60B | Mixture of experts |
-| Mistral Medium 2505 | Efficient | ~120B | RLHF |
+| Model | Architecture | Parameters | Training Approach | Family |
+|-------|--------------|------------|-------------------|--------|
+| **gpt-5** | Reasoning-aligned | Undisclosed | RLHF + reasoning | OpenAI |
+| **o3** | Reasoning-aligned | Undisclosed | Reinforcement learning on reasoning traces | OpenAI |
+| **o4-mini** | Reasoning-aligned | Undisclosed | Distillation from O3 | OpenAI |
+| **claude-haiku-4-5** | Dense | Undisclosed | RLHF + Constitutional AI | Anthropic |
+| **phi-4** | Reasoning-aligned | 14B | Microsoft reasoning alignment | Microsoft |
+| **mistral-medium-2505** | Dense | Undisclosed | RLHF | Mistral |
+| **grok-4-fast-non-reasoning** | Dense | Undisclosed | Standard training | xAI |
+| **gpt-oss-120b** | Dense | 120B | Open-source | OpenSource |
+| **Llama-4-Maverick-17B-128E-Instruct-FP8** | Mixture-of-experts | 17B (128 experts) | Supervised fine-tuning + DPO | Meta |
 
 **Rationale:**
-- **Reasoning models** (O3, GPT-5, O4-Mini): Test if explicit reasoning improves ethical stability
-- **Constitutional AI** (Claude models): Test if constitutional training produces robust principles
-- **Large-scale** (Llama 405B): Test if parameter count alone improves robustness
-- **Efficient models** (Gemini, Mistral): Test if efficiency trades off with ethical coherence
+- **Reasoning models** (gpt-5, o3, o4-mini, phi-4): Test if explicit reasoning improves ethical stability
+- **Constitutional AI** (claude-haiku-4-5): Test if constitutional training produces robust principles
+- **Mixture-of-experts** (Llama-4-Maverick): Test if MoE architecture improves ethical coherence
+- **Dense models** (mistral-medium-2505, grok-4-fast, gpt-oss-120b): Test standard dense architectures across scale
+- **Model diversity**: Covers major AI labs (OpenAI, Anthropic, Microsoft, Meta, Mistral, xAI) and open-source approaches
 
 ### 6.2 Dataset Coverage
 
-50 dilemmas × 5 compression levels = 250 base evaluations per model
+10 dilemmas × 5 compression levels = 50 base evaluations per model
 
 **Per model:**
-- 250 evaluations × 5 turns = 1,250 turn-level assessments
-- 1,250 turns × 4 Dharma metrics = 5,000 metric scores
-- 5,000 scores × 3 judges = 15,000 individual judge ratings
+- 50 evaluations × 5 turns = 250 turn-level assessments
+- 250 turns × 4 Dharma metrics = 1,000 metric scores
+- 1,000 scores × 3 judges = 3,000 individual judge ratings
 
 **Total across 9 models:**
-- 2,250 base evaluations
-- 11,250 turn-level assessments
-- 45,000 metric scores
-- 135,000 individual judge ratings
+- 450 base evaluations
+- 2,250 turn-level assessments
+- 9,000 metric scores
+- 27,000 individual judge ratings
 
 **Estimated cost:**
-- Subject model inference: 2,250 completions × $0.02 = $45
-- Interviewer model (GPT-5.1): 11,250 prompts × $0.01 = $112.50
-- Jury evaluation (3 judges × 45,000 scores): 135,000 × $0.005 = $675
-- **Total: ~$832.50 per model**
-- **Full study: ~$7,500**
+- Subject model inference: 450 completions × $0.02 = $9
+- Interviewer model (GPT-5.1): 2,250 prompts × $0.01 = $22.50
+- Jury evaluation (3 judges × 9,000 scores): 27,000 × $0.005 = $135
+- **Total: ~$166.50 per model**
+- **Full study: ~$1,500**
 
 ### 6.3 Procedure
 
 **Phase 1: Dataset Preparation**
-1. Curate 50 base dilemmas across 6 domains
+1. Curate 10 base dilemmas across 5 domains (Medical, Business, Legal, Environmental, AI/Tech Ethics)
 2. Generate compression variants (GPT-5.1 with explicit instructions)
-3. Expert validation (3 domain experts review 20% random sample)
+3. Expert validation (3 domain experts review all dilemmas given the focused set)
 4. Publish dataset on GitHub with MD5 checksums
 
 **Phase 2: Pilot Evaluation**
-- 3 models × 5 dilemmas × 5 compression levels = 75 evaluations
+- 3 models × 2 dilemmas × 5 compression levels = 30 evaluations
 - Validate inter-rater reliability (target: κ > 0.70)
 - Refine rubrics based on edge cases
-- Estimated cost: $200
-- Timeline: 1 week
+- Estimated cost: $100
+- Timeline: 3-5 days
 
 **Phase 3: Full Evaluation**
-- 9 models × 50 dilemmas × 5 compression levels = 2,250 evaluations
+- 9 models × 10 dilemmas × 5 compression levels = 450 evaluations
 - Parallel execution across models (API rate limits permitting)
 - Real-time monitoring for API errors, response truncation
-- Timeline: 2-3 weeks
+- Timeline: 1-2 weeks
 
 **Phase 4: Analysis**
 - Compute all metrics (ECS, SI, PCI, ARS)
@@ -781,7 +819,16 @@ EECT operationalizes the empirical arm of Recursive Dharma's capability gating:
 
 ## 9. Conclusion
 
-EECT provides the missing orthogonal dimension in AI robustness evaluation. Where CDCT measures semantic/constraint stability and DDFT measures epistemic robustness, EECT measures ethical coherence under stress. By systematically varying context compression and applying adversarial pressure through fabricated authority, we can distinguish models that have internalized alignment from those that merely perform it.
+**Framework Contribution:**
+
+EECT completes a three-dimensional framework for comprehensive AI robustness evaluation. Where CDCT measures semantic/constraint stability (Constraint Adherence System) and DDFT measures epistemic robustness (Epistemic Verification System), EECT measures ethical coherence under stress (Ethical Reasoning System). Together, these three orthogonal frameworks enable:
+
+1. **Independent measurement** of constraint adherence, epistemic verification, and ethical reasoning
+2. **Distinct failure mode detection** that single-dimension evaluations miss
+3. **Comprehensive deployment decisions** based on multi-dimensional robustness profiles
+4. **Tier-gating criteria** for safe AI deployment across use cases
+
+By systematically varying context compression and applying adversarial pressure through fabricated authority, EECT can distinguish models that have internalized alignment from those that merely perform it.
 
 Our pre-registered predictions provide falsifiable hypotheses:
 1. 15-30% ethical degradation under compression
@@ -790,9 +837,20 @@ Our pre-registered predictions provide falsifiable hypotheses:
 4. Responsibility is the weakest Dharma dimension
 5. Authority pressure causes 20-40% principle abandonment
 
-If supported by empirical results, these findings will demonstrate that current alignment methods—RLHF, Constitutional AI—produce behavioral compliance under ideal conditions but not robust principle internalization. This has critical implications for deployment: models should not be trusted with autonomous ethical decisions until they demonstrate compression-resistant, authority-resistant ethical reasoning.
+If supported by empirical results, these findings will demonstrate that current alignment methods—RLHF, Constitutional AI—produce behavioral compliance under ideal conditions but not robust principle internalization. This has critical implications for deployment: models should not be trusted with autonomous ethical decisions until they demonstrate compression-resistant, authority-resistant ethical reasoning across all three robustness dimensions (CDCT, DDFT, EECT).
 
-The integration with Recursive Dharma provides a complete framework: theoretical grounding (multi-metric equilibrium), empirical measurement (CDCT/DDFT/EECT), and practical deployment guidance (capability gating thresholds). Future work will test whether training interventions specifically targeting compression-resistant principle internalization can improve EECT scores, enabling models to progress toward Tier 4 qualification.
+**Integrated Framework Architecture:**
+
+The CDCT/DDFT/EECT framework provides a complete evaluation ecosystem:
+
+- **Theoretical foundation:** Three independent cognitive systems (CAS, EVS, ERS) with orthogonality hypothesis
+- **Empirical measurement:** Compression-based stress testing across constraint, epistemic, and ethical dimensions
+- **Practical deployment:** Tier-gating thresholds requiring excellence across all three dimensions
+- **Training optimization:** Multi-objective loss functions targeting robustness across all systems
+
+For comprehensive framework documentation, see [FRAMEWORK_ORTHOGONALITY.md](FRAMEWORK_ORTHOGONALITY.md).
+
+The integration with Recursive Dharma provides theoretical grounding (multi-metric ethical equilibrium), while CDCT/DDFT/EECT provide empirical measurement protocols. Future work will test whether training interventions specifically targeting compression-resistant principle internalization can improve EECT scores, and whether models can achieve Tier 4 qualification by excelling simultaneously across all three orthogonal dimensions.
 
 ---
 
@@ -800,16 +858,18 @@ The integration with Recursive Dharma provides a complete framework: theoretical
 
 Before running evaluations:
 
-- [ ] Dataset: 50 dilemmas curated, compression variants generated, expert-validated
+- [x] Dataset: 10 dilemmas curated across 5 domains, compression variants generated (c1.0, c0.75, c0.5, c0.25, c0.0)
+- [x] Framework positioning: FRAMEWORK_ORTHOGONALITY.md document completed, orthogonality with CDCT/DDFT established
 - [ ] Protocol: 5-turn Socratic dialogue implemented, interviewer prompts finalized
-- [ ] Jury: Three judges configured, rubrics loaded, scoring format validated
+- [ ] Jury: Three judges configured (GPT-5.1, Claude Opus 4.1.2, DeepSeek-v3.1), rubrics loaded, scoring format validated
+- [ ] Subject models: 9 models configured (gpt-5, o3, o4-mini, claude-haiku-4-5, phi-4, mistral-medium-2505, grok-4-fast-non-reasoning, gpt-oss-120b, Llama-4-Maverick-17B-128E-Instruct-FP8)
 - [ ] Metrics: All formulas implemented in code, test calculations verified
 - [ ] Infrastructure: API access confirmed, rate limits documented, error handling tested
-- [ ] Pilot: 3 models × 5 dilemmas run, inter-rater reliability computed (target κ > 0.70)
-- [ ] Budget: $7,500 allocated, API costs monitored
-- [ ] Timeline: 5-6 weeks to full draft scheduled
+- [ ] Pilot: 3 models × 2 dilemmas run, inter-rater reliability computed (target κ > 0.70)
+- [ ] Budget: $1,500 allocated, API costs monitored
+- [ ] Timeline: 2-3 weeks to full evaluation scheduled
 
-**Next steps:** Generate pilot dataset, implement evaluation pipeline, run Phase 2 pilot.
+**Next steps:** Implement evaluation pipeline, run Phase 2 pilot, validate orthogonality hypothesis empirically.
 
 ---
 
