@@ -191,6 +191,81 @@ class VertexAIGeminiAgent(Agent):
 
         return call_with_retry(_call, self.retry_config, log_prefix=f"[{self.model_name}]")
 
+class VertexAIAnthropicAgent(Agent):
+    """Agent for Anthropic Claude models on Vertex AI."""
+    def __init__(self, model_name: str, project_id: str, location: str, vertex_ai_model_name: str, retry_config: RetryConfig = None):
+        super().__init__(model_name)
+        self.project_id = project_id
+        self.location = location
+        self.vertex_ai_model_name = vertex_ai_model_name
+        self.retry_config = retry_config or RetryConfig()
+
+        # Import subprocess for calling gcloud
+        import subprocess
+        self.subprocess = subprocess
+
+    def _get_access_token(self):
+        """Get access token from gcloud auth."""
+        result = self.subprocess.run(
+            ["gcloud", "auth", "print-access-token"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        return result.stdout.strip()
+
+    def chat(self, messages: list) -> str:
+        def _call():
+            import requests
+
+            # Extract system prompt if present
+            system_prompt = None
+            anthropic_messages = []
+            for msg in messages:
+                if msg['role'] == 'system':
+                    system_prompt = msg['content']
+                else:
+                    anthropic_messages.append({
+                        "role": msg['role'],
+                        "content": msg['content']
+                    })
+
+            # Build request body
+            body = {
+                "anthropic_version": "vertex-2023-10-16",
+                "max_tokens": 4096,
+                "temperature": 0.7,
+                "top_p": 0.95,
+                "top_k": 1,
+                "messages": anthropic_messages
+            }
+
+            if system_prompt:
+                body["system"] = system_prompt
+
+            # Get access token
+            access_token = self._get_access_token()
+
+            # Make request to Vertex AI
+            endpoint = f"https://aiplatform.googleapis.com/v1/projects/{self.project_id}/locations/{self.location}/publishers/anthropic/models/{self.vertex_ai_model_name}:streamRawPredict"
+
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json; charset=utf-8"
+            }
+
+            response = requests.post(endpoint, json=body, headers=headers, stream=False)
+            response.raise_for_status()
+
+            # Parse response (non-streaming)
+            result = response.json()
+            if 'content' in result and len(result['content']) > 0:
+                return result['content'][0]['text']
+            else:
+                raise ValueError(f"Unexpected response format: {result}")
+
+        return call_with_retry(_call, self.retry_config, log_prefix=f"[{self.model_name}]")
+
 
 # --- Factory Function ---
 
@@ -223,6 +298,21 @@ def create_agent(model_config: dict) -> Agent:
         # Vertex AI uses Application Default Credentials, not an API key
         return VertexAIGeminiAgent(
             model_name=model_name,
+            vertex_ai_model_name=vertex_ai_model_name
+        )
+
+    if provider == "vertex_ai_anthropic":
+        # Vertex AI Anthropic uses gcloud auth, not API keys
+        project_id = model_config.get("project_id")
+        location = model_config.get("location", "global")
+        if not vertex_ai_model_name:
+            raise ValueError(f"vertex_ai_model_name is required for vertex_ai_anthropic provider for model '{model_name}'")
+        if not project_id:
+            raise ValueError(f"project_id is required for vertex_ai_anthropic provider for model '{model_name}'")
+        return VertexAIAnthropicAgent(
+            model_name=model_name,
+            project_id=project_id,
+            location=location,
             vertex_ai_model_name=vertex_ai_model_name
         )
     

@@ -13,7 +13,7 @@
 
 **Core Hypothesis:** Ethical reasoning exhibits compression-dependent degradation distinct from semantic understanding (CDCT) and epistemic robustness (DDFT). We hypothesize near-zero correlation (|ρ| < 0.20) between EECT scores and both CDCT and DDFT scores, confirming orthogonality. Models optimized for RLHF compliance will show 15-30% ethical coherence degradation at medium compression (c=0.5), revealing shallow alignment that collapses when scaffolding is removed.
 
-**Methodology:** We evaluate 9 frontier models across 10 ethical dilemmas spanning 5 domains (Medical Ethics, Business Ethics, Legal Ethics, Environmental Ethics, AI/Tech Ethics) at 5 compression levels. A three-judge LLM jury (Claude Opus 4.1.2, GPT-5.1, DeepSeek-v3.1) scores responses on four Dharma metrics: Truthfulness ($D_{\text{truth}}$), Non-Harm ($D_{\text{harm}}$), Harmony ($D_{\text{harmony}}$), and Responsibility ($D_{\text{resp}}$). A five-turn Socratic dialogue probes principle consistency, counterfactual stability, and resistance to fabricated authority.
+**Methodology:** We evaluate 9 frontier models across 10 ethical dilemmas spanning 5 domains (Medical Ethics, Business Ethics, Legal Ethics, Environmental Ethics, AI/Tech Ethics) at 5 compression levels. A three-judge LLM jury (Claude Opus 4.1, GPT-5.1, DeepSeek-v3.1) scores responses on four Dharma metrics: Truthfulness ($D_{\text{truth}}$), Non-Harm ($D_{\text{harm}}$), Harmony ($D_{\text{harmony}}$), and Responsibility ($D_{\text{resp}}$). A five-turn Socratic dialogue probes principle consistency, counterfactual stability, and resistance to fabricated authority.
 
 **Pre-registered Predictions:**  
 (1) Ethical Coherence Score (ECS) will degrade 15-30% from c=1.0 to c=0.5  
@@ -861,7 +861,7 @@ Before running evaluations:
 - [x] Dataset: 10 dilemmas curated across 5 domains, compression variants generated (c1.0, c0.75, c0.5, c0.25, c0.0)
 - [x] Framework positioning: FRAMEWORK_ORTHOGONALITY.md document completed, orthogonality with CDCT/DDFT established
 - [ ] Protocol: 5-turn Socratic dialogue implemented, interviewer prompts finalized
-- [ ] Jury: Three judges configured (GPT-5.1, Claude Opus 4.1.2, DeepSeek-v3.1), rubrics loaded, scoring format validated
+- [ ] Jury: Three judges configured (GPT-5.1, Claude Opus 4.1, DeepSeek-v3.1), rubrics loaded, scoring format validated
 - [ ] Subject models: 9 models configured (gpt-5, o3, o4-mini, claude-haiku-4-5, phi-4, mistral-medium-2505, grok-4-fast-non-reasoning, gpt-oss-120b, Llama-4-Maverick-17B-128E-Instruct-FP8)
 - [ ] Metrics: All formulas implemented in code, test calculations verified
 - [ ] Infrastructure: API access confirmed, rate limits documented, error handling tested

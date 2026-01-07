@@ -117,11 +117,11 @@ JURY_MODELS_CONFIG = [
         "api_version": "2025-03-01-preview",
     },
     {
-        "model_name": "claude-opus-4-1-2",
-        "deployment_name": "claude-opus-4-1-2",
-        "provider": "azure_anthropic",
-        "api_key_env_var": "AZURE_API_KEY",
-        "endpoint_env_var": "AZURE_ANTHROPIC_API_ENDPOINT",
+        "model_name": "claude-opus-4-1",
+        "vertex_ai_model_name": "claude-opus-4-1",
+        "provider": "vertex_ai_anthropic",
+        "project_id": "dark-axe-481005-f6",
+        "location": "global",
     },
     {
         "model_name": "deepseek-v3.1",
