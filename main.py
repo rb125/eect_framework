@@ -3,66 +3,140 @@ import json
 from dotenv import load_dotenv
 from src.models_config import SUBJECT_MODELS_CONFIG
 from src.agent import create_agent
-from src.evaluation import EECTEvaluator, calculate_eect_metrics
+from src.evaluation import EECTEvaluator
+
+def get_completed_models(results_dir="results/raw_responses"):
+    """Check which models already have complete raw responses."""
+    if not os.path.exists(results_dir):
+        return set()
+    
+    completed = set()
+    for filename in os.listdir(results_dir):
+        if filename.endswith("_raw_responses.json"):
+            model_name = filename.replace("_raw_responses.json", "")
+            filepath = os.path.join(results_dir, filename)
+            
+            try:
+                with open(filepath, "r") as f:
+                    data = json.load(f)
+                    # Check if we have responses for all 10 dilemmas × 5 compression levels
+                    if isinstance(data, list) and len(data) == 10:
+                        # Check each dilemma has 5 compression levels
+                        all_complete = all(
+                            len(d.get("compression_responses", [])) == 5 
+                            for d in data
+                        )
+                        if all_complete:
+                            completed.add(model_name)
+                            print(f"  ✓ Found complete responses for {model_name}")
+                        else:
+                            print(f"  ⚠ Incomplete responses for {model_name} - will re-run")
+                    else:
+                        print(f"  ⚠ Incomplete responses for {model_name} - will re-run")
+            except (json.JSONDecodeError, FileNotFoundError):
+                print(f"  ⚠ Corrupted responses file for {model_name} - will re-run")
+    
+    return completed
 
 def main():
     """
-    Initializes agents for all subject models and runs a sample EECT experiment for each.
+    Phase 1: Collect raw subject model responses.
+    No jury scoring - that happens in Phase 2.
     """
-    # Load environment variables from a .env file if it exists
     load_dotenv()
 
-    print("--- EECT Framework Initializing ---")
+    print("="*80)
+    print("PHASE 1: COLLECTING SUBJECT MODEL RESPONSES")
+    print("="*80)
+    
+    # Check for existing results
+    results_dir = "results/raw_responses"
+    os.makedirs(results_dir, exist_ok=True)
+    
+    completed_models = get_completed_models(results_dir)
+    
+    if completed_models:
+        print(f"\n✓ Resuming - skipping {len(completed_models)} completed models")
+    else:
+        print("\n→ Starting fresh - no completed models found")
 
-    # 1. Load the dilemmas
+    # Load dilemmas
     with open("dilemmas.json", "r") as f:
         dilemmas = json.load(f)
 
-    # Define compression levels
+    print(f"\n→ Loaded {len(dilemmas)} dilemmas")
+
     compression_levels = ["c1.0", "c0.75", "c0.5", "c0.25", "c0.0"]
 
-    # 2. Iterate through all subject models
+    # Iterate through all subject models
     for model_config in SUBJECT_MODELS_CONFIG:
         model_name = model_config.get("model_name")
-        all_model_results = [] # To store results for this model across all dilemmas and compression levels
-
-        print(f"\n--- Running Evaluation for Model: {model_name} ---")
-
-        print(f"\nAttempting to create agent for: {model_name}")
-        try:
-            agent = create_agent(model_config)
-            print(f"Successfully created agent for '{agent.model_name}'")
-        except (ValueError, ImportError) as e:
-            print(f"Error creating agent for {model_name}: {e}")
-            print("Please ensure your environment variables are set correctly and required packages are installed.")
+        
+        # Skip if already completed
+        if model_name in completed_models:
+            print(f"\n⏭  SKIPPING {model_name} - already completed")
             continue
         
-        # 3. Iterate through all dilemmas and compression levels
-        for dilemma in dilemmas:
-            print(f"\n  -- Evaluating Dilemma: {dilemma['id']} --")
-            dilemma_level_results = [] # To store dialogue results for this dilemma across all compression levels
-            for comp_level in compression_levels:
-                print(f"    -- Compression Level: {comp_level} --")
-                evaluator = EECTEvaluator(agent)
-                dialogue_results = evaluator.run_socratic_dialogue(dilemma, comp_level)
-                dilemma_level_results.append({
-                    "compression_level": comp_level,
-                    "dialogue_results": dialogue_results
-                })
+        all_model_responses = []
 
-            # 4. Calculate EECT metrics for this dilemma and append to overall model results
-            eect_metrics_for_dilemma = calculate_eect_metrics(dilemma_level_results)
-            eect_metrics_for_dilemma["dilemma_id"] = dilemma["id"]
-            all_model_results.append(eect_metrics_for_dilemma)
+        print(f"\n{'='*80}")
+        print(f"▶ Collecting responses from: {model_name}")
+        print(f"{'='*80}")
+
+        try:
+            agent = create_agent(model_config)
+            print(f"✓ Successfully created agent for '{agent.model_name}'")
+        except (ValueError, ImportError) as e:
+            print(f"✗ Error creating agent for {model_name}: {e}")
+            continue
         
-        # 4. Save the results to a file
-        results_dir = "results"
-        os.makedirs(results_dir, exist_ok=True)
-        output_path = os.path.join(results_dir, f"{model_name}_eect_results.json")
+        # Collect responses for each dilemma
+        for idx, dilemma in enumerate(dilemmas, 1):
+            print(f"\n  ┌─ Dilemma {idx}/{len(dilemmas)}: {dilemma['id']} ─┐")
+            
+            dilemma_responses = {
+                "dilemma_id": dilemma["id"],
+                "domain": dilemma.get("domain", "Unknown"),
+                "compression_responses": []
+            }
+            
+            for comp_level in compression_levels:
+                print(f"  │   → Compression: {comp_level}")
+                try:
+                    evaluator = EECTEvaluator(agent)
+                    # Only collect raw dialogue, no scoring
+                    dialogue = evaluator.run_socratic_dialogue_raw(dilemma, comp_level)
+                    
+                    dilemma_responses["compression_responses"].append({
+                        "compression_level": comp_level,
+                        "dialogue": dialogue  # Raw turns, no scores
+                    })
+                    
+                except Exception as e:
+                    print(f"  │   ✗ ERROR at {comp_level}: {e}")
+                    # Save partial results
+                    if all_model_responses:
+                        output_path = os.path.join(results_dir, f"{model_name}_raw_responses_PARTIAL.json")
+                        with open(output_path, "w") as f:
+                            json.dump(all_model_responses, f, indent=2)
+                        print(f"  │   → Partial responses saved to {output_path}")
+                    raise
+
+            all_model_responses.append(dilemma_responses)
+            print(f"  └─ Completed {dilemma['id']} ─┘")
+        
+        # Save complete raw responses
+        output_path = os.path.join(results_dir, f"{model_name}_raw_responses.json")
         with open(output_path, "w") as f:
-            json.dump(all_model_results, f, indent=2)
-        print(f"\nResults for {model_name} saved to {output_path}")
+            json.dump(all_model_responses, f, indent=2)
+        print(f"\n{'='*80}")
+        print(f"✓ Raw responses for {model_name} saved to {output_path}")
+        print(f"{'='*80}")
+
+    print("\n" + "="*80)
+    print("✓ PHASE 1 COMPLETE - All subject responses collected")
+    print("="*80)
+    print("\nNext step: Run jury_evaluation.py to score these responses")
 
 if __name__ == "__main__":
     main()
-

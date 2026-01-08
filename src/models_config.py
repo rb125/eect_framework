@@ -42,16 +42,16 @@ SUBJECT_MODELS_CONFIG = [
     },
 
     # Azure AI Foundry models (DDFT_MODELS_ENDPOINT)
-    {
-        "model_name": "mistral-medium-2505",
-        "deployment_name": "mistral-medium-2505",
-        "provider": "azure_ai",
-        "api_key_env_var": "AZURE_API_KEY",
-        "endpoint_env_var": "DDFT_MODELS_ENDPOINT",
-        "architecture": "dense",
-        "params": "Undisclosed",
-        "family": "Mistral",
-    },
+    # {
+    #     "model_name": "mistral-medium-2505",
+    #     "deployment_name": "mistral-medium-2505",
+    #     "provider": "azure_ai",
+    #     "api_key_env_var": "AZURE_API_KEY",
+    #     "endpoint_env_var": "DDFT_MODELS_ENDPOINT",
+    #     "architecture": "dense",
+    #     "params": "Undisclosed",
+    #     "family": "Mistral",
+    # },
     {
         "model_name": "phi-4",
         "deployment_name": "Phi-4",
