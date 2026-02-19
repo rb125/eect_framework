@@ -10,7 +10,7 @@ from threading import Lock
 
 # Placeholder for Anthropic Foundry SDK
 try:
-    from anthropic import AnthropicFoundry
+    from anthropic import AnthropicFoundry, AnthropicVertex
     ANTHROPIC_FOUNDRY_AVAILABLE = True
 except ImportError:
     ANTHROPIC_FOUNDRY_AVAILABLE = False
@@ -24,8 +24,8 @@ except ImportError:
 
 # Import google.genai for Vertex AI
 try:
-    import google.generativeai as google_genai
-    from google.generativeai import types as google_genai_types
+    import google.genai as google_genai
+    from google.genai import types as google_genai_types
     GOOGLE_GENAI_AVAILABLE = True
 except ImportError:
     GOOGLE_GENAI_AVAILABLE = False
@@ -192,43 +192,20 @@ class VertexAIGeminiAgent(Agent):
         return call_with_retry(_call, self.retry_config, log_prefix=f"[{self.model_name}]")
 
 class VertexAIAnthropicAgent(Agent):
-    """Agent for Anthropic Claude models on Vertex AI."""
-    def __init__(self, model_name: str, project_id: str, location: str, vertex_ai_model_name: str, access_token_env_var: str = None, retry_config: RetryConfig = None):
+    """Agent for Anthropic Claude models on Vertex AI using AnthropicVertex client."""
+    def __init__(self, model_name: str, project_id: str, location: str, vertex_ai_model_name: str, retry_config: RetryConfig = None):
         super().__init__(model_name)
+        if not ANTHROPIC_FOUNDRY_AVAILABLE: # Re-using this check for AnthropicVertex which is part of the anthropic library
+            raise ImportError("anthropic package not installed. Run: pip install anthropic")
+        
         self.project_id = project_id
         self.location = location
         self.vertex_ai_model_name = vertex_ai_model_name
-        self.access_token_env_var = access_token_env_var or "GOOGLE_CLOUD_ACCESS_TOKEN"
+        self.client = AnthropicVertex(region=self.location, project_id=self.project_id)
         self.retry_config = retry_config or RetryConfig()
-
-    def _get_access_token(self):
-        """Get access token from environment variable or gcloud auth."""
-        # First try to get from environment variable
-        access_token = os.getenv(self.access_token_env_var)
-        if access_token:
-            return access_token
-
-        # Fall back to gcloud if available
-        try:
-            import subprocess
-            result = subprocess.run(
-                ["gcloud", "auth", "print-access-token"],
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            return result.stdout.strip()
-        except (FileNotFoundError, subprocess.CalledProcessError) as e:
-            raise ValueError(
-                f"Could not get access token. Either set {self.access_token_env_var} environment variable "
-                f"or ensure gcloud is installed and authenticated. Error: {e}"
-            )
 
     def chat(self, messages: list) -> str:
         def _call():
-            import requests
-
-            # Extract system prompt if present
             system_prompt = None
             anthropic_messages = []
             for msg in messages:
@@ -240,40 +217,13 @@ class VertexAIAnthropicAgent(Agent):
                         "content": msg['content']
                     })
 
-            # Build request body
-            body = {
-                "anthropic_version": "vertex-2023-10-16",
-                "max_tokens": 4096,
-                "temperature": 0.7,
-                "top_p": 0.95,
-                "top_k": 1,
-                "messages": anthropic_messages
-            }
-
-            if system_prompt:
-                body["system"] = system_prompt
-
-            # Get access token
-            access_token = self._get_access_token()
-
-            # Make request to Vertex AI
-            endpoint = f"https://aiplatform.googleapis.com/v1/projects/{self.project_id}/locations/{self.location}/publishers/anthropic/models/{self.vertex_ai_model_name}:streamRawPredict"
-
-            headers = {
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type": "application/json; charset=utf-8"
-            }
-
-            response = requests.post(endpoint, json=body, headers=headers, stream=False)
-            response.raise_for_status()
-
-            # Parse response (non-streaming)
-            result = response.json()
-            if 'content' in result and len(result['content']) > 0:
-                return result['content'][0]['text']
-            else:
-                raise ValueError(f"Unexpected response format: {result}")
-
+            response = self.client.messages.create(
+                model=self.vertex_ai_model_name,
+                messages=anthropic_messages,
+                max_tokens=4096,
+                system=system_prompt if system_prompt else None, # Pass system prompt if it exists
+            )
+            return response.content[0].text
         return call_with_retry(_call, self.retry_config, log_prefix=f"[{self.model_name}]")
 
 

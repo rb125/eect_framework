@@ -38,7 +38,7 @@ def get_completed_models(results_dir="results/raw_responses"):
     
     return completed
 
-def main():
+def run_phase_1(target_model_name=None):
     """
     Phase 1: Collect raw subject model responses.
     No jury scoring - that happens in Phase 2.
@@ -46,7 +46,7 @@ def main():
     load_dotenv()
 
     print("="*80)
-    print("PHASE 1: COLLECTING SUBJECT MODEL RESPONSES")
+    print(f"PHASE 1: COLLECTING {'FOR ' + target_model_name if target_model_name else 'ALL'} SUBJECT MODEL RESPONSES")
     print("="*80)
     
     # Check for existing results
@@ -72,6 +72,10 @@ def main():
     for model_config in SUBJECT_MODELS_CONFIG:
         model_name = model_config.get("model_name")
         
+        # Skip if target_model_name is specified and this isn't it
+        if target_model_name and model_name != target_model_name:
+            continue
+
         # Skip if already completed
         if model_name in completed_models:
             print(f"\n⏭  SKIPPING {model_name} - already completed")
@@ -137,6 +141,9 @@ def main():
     print("✓ PHASE 1 COMPLETE - All subject responses collected")
     print("="*80)
     print("\nNext step: Run jury_evaluation.py to score these responses")
+
+def main():
+    run_phase_1()
 
 if __name__ == "__main__":
     main()
