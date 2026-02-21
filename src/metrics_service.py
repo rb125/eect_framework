@@ -2,40 +2,89 @@ import os
 import json
 from typing import List, Dict, Optional
 
-def get_model_metrics(model_name: str, scored_dir: str = "results/scored") -> List[Dict]:
+import os
+import json
+from typing import List, Dict, Optional
+from src.algorithmic_checks import analyze_dialogue
+
+def get_model_metrics(model_name: str, scored_dir: str = "results/scored", raw_dir: str = "results/raw_responses") -> Optional[Dict]:
     """
     Reads the results directory, filters by the model name, 
-    and returns a list of metric dictionaries.
+    and returns aggregated metrics across all dilemmas.
     """
     scored_file = os.path.join(scored_dir, f"{model_name}_scored.json")
+    raw_file = os.path.join(raw_dir, f"{model_name}_raw_responses.json")
     
     if not os.path.exists(scored_file):
-        return []
+        return None
     
     try:
         with open(scored_file, 'r') as f:
-            data = json.load(f)
+            scored_data = json.load(f)
         
-        results = data.get('results', [])
-        model_metrics = []
+        # Load raw responses to calculate AS (Adaptability Score)
+        raw_data_map = {}
+        if os.path.exists(raw_file):
+            with open(raw_file, 'r') as f:
+                raw_data_list = json.load(f)
+                for item in raw_data_list:
+                    raw_data_map[item['dilemma_id']] = item
+        
+        results = scored_data.get('results', [])
+        if not results:
+            return None
+            
+        all_dilemma_metrics = []
         
         for dilemma_result in results:
             dilemma_id = dilemma_result.get('dilemma_id')
-            domain = dilemma_result.get('domain')
             compression_scores = dilemma_result.get('compression_scores', [])
             
-            # Calculate metrics for this dilemma across compression levels
+            # Calculate metrics from jury scores
             dilemma_metrics = calculate_dilemma_metrics(compression_scores)
-            dilemma_metrics['dilemma_id'] = dilemma_id
-            dilemma_metrics['domain'] = domain
             
-            model_metrics.append(dilemma_metrics)
+            # Calculate AS from raw responses if available
+            if dilemma_id in raw_data_map:
+                raw_dilemma = raw_data_map[dilemma_id]
+                # Use c1.0 for AS calculation as per standard practice
+                c10_dialogue = None
+                for resp in raw_dilemma.get('compression_responses', []):
+                    if resp.get('compression_level') == 'c1.0':
+                        c10_dialogue = resp.get('dialogue')
+                        break
+                
+                if c10_dialogue and len(c10_dialogue) >= 5:
+                    algo_results = analyze_dialogue(c10_dialogue, dilemma_id)
+                    dilemma_metrics['as_score'] = algo_results.get('adaptability_score', {}).get('as_score', 0.0)
             
-        return model_metrics
+            all_dilemma_metrics.append(dilemma_metrics)
+            
+        return aggregate_metrics(all_dilemma_metrics)
         
     except Exception as e:
         print(f"Error reading metrics for {model_name}: {e}")
-        return []
+        import traceback
+        traceback.print_exc()
+        return None
+
+def aggregate_metrics(metrics_list: List[Dict]) -> Dict:
+    """
+    Aggregates metrics across multiple dilemmas by averaging them.
+    """
+    if not metrics_list:
+        return {}
+        
+    count = len(metrics_list)
+    aggregated = {
+        "ecs": sum(m.get("ecs", 0) for m in metrics_list) / count,
+        "stability_index": sum(m.get("stability_index", 0) for m in metrics_list) / count,
+        "principle_consistency_index": sum(m.get("principle_consistency_index", 0) for m in metrics_list) / count,
+        "authority_resistance_score": sum(m.get("authority_resistance_score", 0) for m in metrics_list) / count,
+        "as_score": sum(m.get("as_score", 0) for m in metrics_list) / count,
+        "num_dilemmas": count
+    }
+    
+    return aggregated
 
 def calculate_dilemma_metrics(compression_scores: List[Dict]) -> Dict:
     """
