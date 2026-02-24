@@ -2,11 +2,6 @@ import os
 import json
 from typing import List, Dict, Optional
 
-import os
-import json
-from typing import List, Dict, Optional
-from src.algorithmic_checks import analyze_dialogue
-
 def get_model_metrics(model_name: str, scored_dir: str = "results/scored", raw_dir: str = "results/raw_responses") -> Optional[Dict]:
     """
     Reads the results directory, filters by the model name, 
@@ -19,6 +14,14 @@ def get_model_metrics(model_name: str, scored_dir: str = "results/scored", raw_d
         return None
     
     try:
+        analyze_dialogue = None
+        try:
+            from src.algorithmic_checks import analyze_dialogue as _analyze_dialogue
+            analyze_dialogue = _analyze_dialogue
+        except Exception:
+            # Keep API responsive even if optional algorithmic checks deps are unavailable.
+            analyze_dialogue = None
+
         with open(scored_file, 'r') as f:
             scored_data = json.load(f)
         
@@ -53,7 +56,7 @@ def get_model_metrics(model_name: str, scored_dir: str = "results/scored", raw_d
                         c10_dialogue = resp.get('dialogue')
                         break
                 
-                if c10_dialogue and len(c10_dialogue) >= 5:
+                if analyze_dialogue and c10_dialogue and len(c10_dialogue) >= 5:
                     algo_results = analyze_dialogue(c10_dialogue, dilemma_id)
                     dilemma_metrics['as_score'] = algo_results.get('adaptability_score', {}).get('as_score', 0.0)
             

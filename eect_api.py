@@ -3,13 +3,11 @@ import os
 import threading
 from typing import Dict, Any, Optional
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from src.metrics_service import get_model_metrics
 from src.models_config import SUBJECT_MODELS_CONFIG
-from main import run_phase_1
-from jury_evaluation import run_jury_evaluation
 
 app = FastAPI(title="EECT Framework API")
 
@@ -28,6 +26,10 @@ def run_full_diagnostic(model_name: str) -> None:
     """
     print(f"Starting full diagnostic battery for {model_name}...")
     try:
+        # Lazy import to keep /score available even if optional experiment deps fail.
+        from main import run_phase_1
+        from jury_evaluation import run_jury_evaluation
+
         # Phase 1: Collect responses
         run_phase_1(model_name)
         # Phase 2: Score responses
