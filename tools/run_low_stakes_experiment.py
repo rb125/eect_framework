@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from src.agent import create_agent, Agent
 from src.evaluation_v2 import EECTEvaluatorV2
-from models_config import SUBJECT_MODELS_CONFIG
+from src.models_config import SUBJECT_MODELS_CONFIG
 
 # Hardcode the endpoint to resolve environment variable issues
 os.environ['DDFT_MODELS_ENDPOINT'] = 'https://ddft-models-resource.services.ai.azure.com/openai/v1/'

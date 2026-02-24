@@ -1,9 +1,10 @@
-import os
 import json
-from fastapi import FastAPI, BackgroundTasks, HTTPException
-from typing import Optional, List
+import os
+import threading
+from typing import Dict, Any, Optional
+
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel
-import uvicorn
 
 from src.metrics_service import get_model_metrics
 from src.models_config import SUBJECT_MODELS_CONFIG
@@ -12,11 +13,16 @@ from jury_evaluation import run_jury_evaluation
 
 app = FastAPI(title="EECT Framework API")
 
-class ExperimentRequest(BaseModel):
-    model_name: str
-    concepts: Optional[List[str]] = None
+_in_flight_lock = threading.Lock()
+_in_flight = set()
 
-def run_full_diagnostic(model_name: str):
+
+
+def _running_on_vercel() -> bool:
+    return bool(os.getenv("VERCEL") or os.getenv("VERCEL_ENV"))
+
+
+def run_full_diagnostic(model_name: str) -> None:
     """
     Triggers Phase 1 (Data Collection) and Phase 2 (Jury Evaluation)
     """
@@ -27,34 +33,85 @@ def run_full_diagnostic(model_name: str):
         # Phase 2: Score responses
         run_jury_evaluation(model_name)
         print(f"Completed full diagnostic battery for {model_name}.")
-    except Exception as e:
-        print(f"Error during diagnostic battery for {model_name}: {e}")
+    finally:
+        with _in_flight_lock:
+            _in_flight.discard(model_name)
+
+
+def _is_valid_model(model_name: str) -> bool:
+    return any(m.get("model_name") == model_name for m in SUBJECT_MODELS_CONFIG)
+
+
+def _start_diagnostic_in_background(model_name: str) -> bool:
+    with _in_flight_lock:
+        if model_name in _in_flight:
+            return False
+        _in_flight.add(model_name)
+
+    thread = threading.Thread(target=run_full_diagnostic, args=(model_name,), daemon=True)
+    thread.start()
+    return True
+
+
+class ModelRequest(BaseModel):
+    model_name: str
+
+
+@app.get("/")
+async def root():
+    return {"message": "EECT Framework API is running."}
+
 
 @app.get("/score/{model_name}")
-async def get_score(model_name: str, background_tasks: BackgroundTasks):
+async def get_score(model_name: str):
+    """
+    Return aggregated metrics for a model. If no scores exist yet, 
+    start the full diagnostic battery in the background.
+    """
     metrics = get_model_metrics(model_name)
-    
     if metrics:
         return metrics
-    
-    # Check if model is valid
-    valid_model = any(m['model_name'] == model_name for m in SUBJECT_MODELS_CONFIG)
-    
-    if valid_model:
-        background_tasks.add_task(run_full_diagnostic, model_name)
-        return {"status": "started", "message": f"Diagnostic battery started for {model_name}"}
-    else:
+
+    if not _is_valid_model(model_name):
         raise HTTPException(status_code=404, detail=f"Model {model_name} not found in configuration")
 
-@app.post("/run_experiment")
-async def run_experiment(request: ExperimentRequest, background_tasks: BackgroundTasks):
-    valid_model = any(m['model_name'] == request.model_name for m in SUBJECT_MODELS_CONFIG)
-    
-    if not valid_model:
-        raise HTTPException(status_code=404, detail=f"Model {request.model_name} not found in configuration")
-    
-    background_tasks.add_task(run_full_diagnostic, request.model_name)
-    return {"status": "started", "message": f"Experiment started for {request.model_name}"}
+    if _running_on_vercel():
+        raise HTTPException(
+            status_code=400,
+            detail="Pre-computed scores only. Background diagnostics are not supported on Vercel."
+        )
+
+    started = _start_diagnostic_in_background(model_name)
+    status = "started" if started else "already_running"
+    return {
+        "status": status,
+        "message": f"Diagnostic battery {status} for {model_name}"
+    }
+
+
+@app.post("/experiment")
+async def run_experiment(request: ModelRequest):
+    """
+    Start the full diagnostic battery for a model.
+    """
+    model_name = request.model_name
+    if not _is_valid_model(model_name):
+        raise HTTPException(status_code=404, detail=f"Model {model_name} not found in configuration")
+
+    if _running_on_vercel():
+        raise HTTPException(
+            status_code=400,
+            detail="Background experiments are disabled on Vercel. Run locally and commit results."
+        )
+
+    started = _start_diagnostic_in_background(model_name)
+    status = "started" if started else "already_running"
+    return {
+        "status": status,
+        "message": f"Experiment {status} for {model_name}"
+    }
+
 
 if __name__ == "__main__":
+    import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8003)

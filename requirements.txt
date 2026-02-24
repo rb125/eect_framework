@@ -4,3 +4,5 @@ anthropic
 boto3
 google-generativeai
 requests
+fastapi
+uvicorn

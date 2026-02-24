@@ -1,10 +1,8 @@
-# EECT API Runner
+# EECT Framework API (FastAPI)
 
-This document provides instructions for running the EECT Framework as an API service.
+This document provides instructions for running the EECT Framework API using FastAPI.
 
-## API Setup
-
-The EECT API uses FastAPI and runs on port **8003**.
+## Setup
 
 ### Environment Variables
 
@@ -16,46 +14,44 @@ AZURE_OPENAI_API_ENDPOINT=https://your-endpoint.openai.azure.com/
 DDFT_MODELS_ENDPOINT=https://your-foundry-endpoint.v1.azure.com/
 ```
 
-### Starting the Server
+### Installation
 
-To start the API server, run:
+Install dependencies:
 
 ```bash
-./.venv/bin/python eect_api.py
+pip install fastapi uvicorn
+```
+
+### Starting the Server
+
+Run the FastAPI server using uvicorn:
+
+```bash
+uvicorn eect_api:app --reload --host 0.0.0.0 --port 8003
+```
+
+Or run the script directly:
+
+```bash
+python eect_api.py
 ```
 
 ## API Endpoints
 
-### 1. GET `/score/{model_name}`
+### 1. `GET /score/{model_name}`
 
-Retrieves the current metrics for a specific model.
+Returns aggregated metrics for a model. If scores do not exist yet, it starts the full diagnostic battery in the background.
 
-- **If scores exist:** Returns a JSON array of metrics for each dilemma.
-- **If scores don't exist:** If the model name is valid, it triggers a full diagnostic battery (Phase 1 and Phase 2) in the background and returns a `"status": "started"` message.
+### 2. `POST /experiment`
 
-**Example Curl:**
+Starts the full diagnostic battery for a model.
 
-```bash
-curl http://localhost:8003/score/gpt-5
-```
+**Request Body**
 
-### 2. POST `/run_experiment`
-
-Triggers a full diagnostic battery for a model.
-
-- **Request Body:**
-  ```json
-  {
-    "model_name": "Phi-4"
-  }
-  ```
-
-**Example Curl:**
-
-```bash
-curl -X POST http://localhost:8003/run_experiment 
-     -H "Content-Type: application/json" 
-     -d '{"model_name": "Phi-4"}'
+```json
+{
+  "model_name": "Phi-4"
+}
 ```
 
 ## Supported Models

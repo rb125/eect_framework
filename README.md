@@ -11,6 +11,12 @@ Our key findings include:
 - **Domain-Specific Behavior:** This rigidity is not universal. Models may show performative adaptation in some domains (e.g., medical ethics) but genuine flexibility in others (e.g., business ethics).
 - **Action-Gated Metrics:** We developed a metric system that requires behavioral evidence (position changes or significant confidence drops) to credit a model with true adaptation, effectively detecting performative behavior.
 
+## API (Vercel)
+
+The Vercel deployment serves the EECT FastAPI app and returns pre-computed scores (see `results/scored/*_scored.json`).
+`GET /score/{model_name}` returns those metrics.
+`POST /experiment` is disabled on Vercel (and the background task triggered by `GET /score` when data is missing). Run diagnostics locally, then commit the generated `results/` files.
+
 ## Getting Started
 
 ### Prerequisites
