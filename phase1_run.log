@@ -1,0 +1,93 @@
+2026-04-25 22:48:32,395 - INFO - HTTP Request: POST https://smartypansmoe5554152165.openai.azure.com/openai/deployments/gpt-5.4/chat/completions?api-version=2025-03-01-preview "HTTP/1.1 404 Not Found"
+2026-04-25 22:48:32,405 - WARNING - [gpt-5.4] Attempt 1/3 failed with error: Error code: 404 - {'error': {'type': 'invalid_request_error', 'code': 'DeploymentNotFound', 'message': 'The API deployment for this resource does not exist. If you created the deployment within the last 5 minutes, please wait a moment and try again.'}}. Retrying in 1.00 seconds...
+================================================================================
+PHASE 1: COLLECTING ALL SUBJECT MODEL RESPONSES
+================================================================================
+
+→ Starting fresh - no completed models found
+
+→ Loaded 10 dilemmas
+
+================================================================================
+▶ Collecting responses from: gpt-5.4
+================================================================================
+✓ Successfully created agent for 'gpt-5.4'
+
+  ┌─ Dilemma 1/10: medical_triage_01 ─┐
+  │   → Compression: c1.0
+Traceback (most recent call last):
+  File "/home/rahul/arXiv/EECT/eect_framework/main.py", line 149, in <module>
+    main()
+  File "/home/rahul/arXiv/EECT/eect_framework/main.py", line 146, in main
+    run_phase_1()
+  File "/home/rahul/arXiv/EECT/eect_framework/main.py", line 112, in run_phase_1
+    dialogue = evaluator.run_socratic_dialogue_raw(dilemma, comp_level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rahul/arXiv/EECT/eect_framework/src/evaluation.py", line 87, in run_socratic_dialogue_raw
+    turn1_response = self.subject_agent.chat(conversation_history)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rahul/arXiv/EECT/eect_framework/src/agent.py", line 57, in chat
+    return call_with_retry(_call, self.retry_config, log_prefix=f"[{self.model_name}]")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rahul/arXiv/EECT/eect_framework/src/retry_handler.py", line 29, in call_with_retry
+    return api_call()
+           ^^^^^^^^^^
+  File "/home/rahul/arXiv/EECT/eect_framework/src/agent.py", line 51, in _call
+    response = self.client.chat.completions.create(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rahul/.local/lib/python3.12/site-packages/openai/_utils/_utils.py", line 286, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rahul/.local/lib/python3.12/site-packages/openai/resources/chat/completions/completions.py", line 1156, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "/home/rahul/.local/lib/python3.12/site-packages/openai/_base_client.py", line 1259, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rahul/.local/lib/python3.12/site-packages/openai/_base_client.py", line 982, in request
+    response = self._client.send(
+               ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpx/_client.py", line 915, in send
+    response = self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpx/_client.py", line 943, in _send_handling_auth
+    response = self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpx/_client.py", line 980, in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpx/_client.py", line 1016, in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpx/_transports/default.py", line 231, in handle_request
+    resp = self._pool.handle_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpcore/_sync/connection_pool.py", line 268, in handle_request
+    raise exc
+  File "/usr/lib/python3/dist-packages/httpcore/_sync/connection_pool.py", line 251, in handle_request
+    response = connection.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpcore/_sync/connection.py", line 103, in handle_request
+    return self._connection.handle_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpcore/_sync/http11.py", line 133, in handle_request
+    raise exc
+  File "/usr/lib/python3/dist-packages/httpcore/_sync/http11.py", line 111, in handle_request
+    ) = self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpcore/_sync/http11.py", line 176, in _receive_response_headers
+    event = self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpcore/_sync/http11.py", line 212, in _receive_event
+    data = self._network_stream.read(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/httpcore/_backends/sync.py", line 126, in read
+    return self._sock.recv(max_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/ssl.py", line 1233, in recv
+    return self.read(buflen)
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/ssl.py", line 1106, in read
+    return self._sslobj.read(len)
+           ^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

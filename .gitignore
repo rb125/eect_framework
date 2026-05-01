@@ -6,3 +6,5 @@ tools/__pycache__/
 tests/__pycache__/
 .venv/
 .env
+.kiro/
+src/__pycache__/

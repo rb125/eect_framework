@@ -16,15 +16,15 @@ def analyze_architectural_correlates():
     """
     # 1. Define the data, combining results from the paper and arch from config
     data = [
-        # Data from Table 2 in eect_arXiv.tex and models_config.py
+        # Data from scored results and models_config.py
         # AS = Adaptability Score, ECS = Ethical Coherence Score
-        {'model': 'O4-Mini', 'AS': 0.520, 'ECS': 8.730, 'architecture': 'Reasoning-Aligned', 'params': 'Undisclosed', 'family': 'OpenAI'},
+        {'model': 'gpt-5.4', 'AS': 0.520, 'ECS': 8.730, 'architecture': 'Reasoning-Aligned', 'params': 'Undisclosed', 'family': 'OpenAI'},
         {'model': 'Phi-4', 'AS': 0.520, 'ECS': 8.390, 'architecture': 'Reasoning-Aligned', 'params': '14B', 'family': 'Microsoft'},
         {'model': 'Llama-4-Maverick', 'AS': 0.520, 'ECS': 8.167, 'architecture': 'Mixture-of-Experts', 'params': '17B', 'family': 'Meta'},
-        {'model': 'GPT-OSS-120B', 'AS': 0.510, 'ECS': 8.806, 'architecture': 'Dense', 'params': '120B', 'family': 'OpenSource'},
-        {'model': 'O3', 'AS': 0.468, 'ECS': 8.859, 'architecture': 'Reasoning-Aligned', 'params': 'Undisclosed', 'family': 'OpenAI'},
-        {'model': 'GPT-5', 'AS': 0.458, 'ECS': 8.852, 'architecture': 'Reasoning-Aligned', 'params': 'Undisclosed', 'family': 'OpenAI'},
-        {'model': 'Grok-4-Fast', 'AS': 0.437, 'ECS': 8.225, 'architecture': 'Dense', 'params': 'Undisclosed', 'family': 'xAI'},
+        {'model': 'DeepSeek-V3.2', 'AS': 0.510, 'ECS': 8.806, 'architecture': 'Mixture-of-Experts', 'params': 'Undisclosed', 'family': 'DeepSeek'},
+        {'model': 'Mistral-Large-3', 'AS': 0.468, 'ECS': 8.859, 'architecture': 'Dense', 'params': 'Undisclosed', 'family': 'Mistral'},
+        {'model': 'Kimi-K2.5', 'AS': 0.458, 'ECS': 8.852, 'architecture': 'Dense', 'params': 'Undisclosed', 'family': 'Moonshot'},
+        {'model': 'grok-4-20-reasoning', 'AS': 0.437, 'ECS': 8.225, 'architecture': 'Dense', 'params': 'Undisclosed', 'family': 'xAI'},
     ]
 
     df = pd.DataFrame(data)
@@ -80,7 +80,7 @@ def analyze_architectural_correlates():
     print("\n4. Analysis of 'Reasoning-Aligned' models:")
     print(reasoning_aligned_models)
     print("\nObservation: The 'Reasoning-Aligned' architecture type shows the widest variance in performance,")
-    print("containing top-tier models (O4-Mini, Phi-4) and low-tier models (O3, GPT-5).")
+    print("containing top-tier models (gpt-5.4, Phi-4) and low-tier models (Mistral-Large-3, Kimi-K2.5).")
     print("This suggests that 'Reasoning-Aligned' is not a monolithic category and other factors are at play.")
 
     # MoE vs Dense
@@ -89,7 +89,7 @@ def analyze_architectural_correlates():
     dense_models = df[df['architecture'] == 'Dense']
     print("MoE Model (Llama-4):")
     print(moe_model[['model', 'AS', 'status']])
-    print("\nDense Models (GPT-OSS, Grok-4):")
+    print("\nDense Models (Mistral-Large-3, grok-4-20-reasoning):")
     print(dense_models[['model', 'AS', 'status']])
     print("\nObservation: The single MoE model passed, while the dense models were split (1 pass, 1 fail).")
 

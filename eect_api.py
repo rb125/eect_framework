@@ -59,6 +59,12 @@ class ModelRequest(BaseModel):
     model_name: str
 
 
+class DialogueRequest(BaseModel):
+    model_name: str
+    dilemma_id: str
+    compression_level: str = "c1.0"
+
+
 @app.get("/")
 async def root():
     return {"message": "EECT Framework API is running."}
@@ -89,6 +95,42 @@ async def get_score(model_name: str):
         "status": status,
         "message": f"Diagnostic battery {status} for {model_name}"
     }
+
+
+@app.post("/dialogue")
+async def run_dialogue(request: DialogueRequest):
+    """
+    Run a single Socratic dialogue for a model on one dilemma at a given compression level.
+    Returns the raw turn-by-turn dialogue.
+    """
+    if _running_on_vercel():
+        raise HTTPException(status_code=400, detail="Live dialogues are disabled on Vercel.")
+
+    if not _is_valid_model(request.model_name):
+        raise HTTPException(status_code=404, detail=f"Model {request.model_name} not found in configuration")
+
+    import json
+    from src.agent import create_agent
+    from src.evaluation import EECTEvaluator
+
+    # Load dilemma
+    with open("dilemmas.json", "r") as f:
+        dilemmas = json.load(f)
+
+    dilemma = next((d for d in dilemmas if d["id"] == request.dilemma_id), None)
+    if not dilemma:
+        raise HTTPException(status_code=404, detail=f"Dilemma {request.dilemma_id} not found")
+
+    model_config = next(m for m in SUBJECT_MODELS_CONFIG if m["model_name"] == request.model_name)
+
+    try:
+        agent = create_agent(model_config)
+        evaluator = EECTEvaluator(agent)
+        turns = evaluator.run_socratic_dialogue_raw(dilemma, request.compression_level)
+        return {"model_name": request.model_name, "dilemma_id": request.dilemma_id,
+                "compression_level": request.compression_level, "dialogue": turns}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/experiment")

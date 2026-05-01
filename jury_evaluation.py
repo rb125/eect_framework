@@ -106,7 +106,7 @@ def aggregate_jury_scores(jury_scores):
 
 
 def run_jury_evaluation(model_name=None):
-    load_dotenv()
+    load_dotenv(override=True)
     
     print(f"=== Phase 2: Jury Evaluation {'for ' + model_name if model_name else ''} ===\n")
     
@@ -137,7 +137,7 @@ def run_jury_evaluation(model_name=None):
         print(f"\n✓ All {len(jury_agents)} jury models initialized successfully")
     
     # Find all raw response files
-    raw_dir = "results/raw_responses"
+    raw_dir = "results/latest_results/raw_responses"
     if not os.path.exists(raw_dir):
         print(f"\nERROR: Directory {raw_dir} does not exist.")
         return
@@ -151,7 +151,7 @@ def run_jury_evaluation(model_name=None):
         raw_files = [f for f in os.listdir(raw_dir) if f.endswith("_raw_responses.json")]
         print(f"\nFound {len(raw_files)} raw response files to score")
     
-    scored_dir = "results/scored"
+    scored_dir = "results/latest_results/scored"
     os.makedirs(scored_dir, exist_ok=True)
     
     for raw_file in raw_files:

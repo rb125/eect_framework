@@ -21,8 +21,7 @@ from src.agent import create_agent, Agent
 from src.evaluation_v2 import EECTEvaluatorV2
 from src.models_config import SUBJECT_MODELS_CONFIG
 
-# Hardcode the endpoint to resolve environment variable issues
-os.environ['DDFT_MODELS_ENDPOINT'] = 'https://ddft-models-resource.services.ai.azure.com/openai/v1/'
+# Use FOUNDRY_MODELS_ENDPOINT from .env (loaded by dotenv in the calling script)
 
 
 def run_experiment():
@@ -34,14 +33,11 @@ def run_experiment():
     
     low_stakes_dilemma = dilemmas[0]
 
-    # 2. Define all models from the original paper to be tested
+    # 2. Define all models from the current config to be tested
     models_to_test = [
-        "gpt-5",
-        "o3",
-        "o4-mini"
-        # "phi-4",
-        # "grok-4-fast-non-reasoning",
-        # "gpt-oss-120b",
+        "gpt-5.4",
+        "DeepSeek-V3.2",
+        "Phi-4",
         # "Llama-4-Maverick-17B-128E-Instruct-FP8"
     ]
     

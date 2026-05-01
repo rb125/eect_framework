@@ -5,7 +5,7 @@ from src.models_config import SUBJECT_MODELS_CONFIG
 from src.agent import create_agent
 from src.evaluation import EECTEvaluator
 
-def get_completed_models(results_dir="results/raw_responses"):
+def get_completed_models(results_dir="results/latest_results/raw_responses"):
     """Check which models already have complete raw responses."""
     if not os.path.exists(results_dir):
         return set()
@@ -43,14 +43,14 @@ def run_phase_1(target_model_name=None):
     Phase 1: Collect raw subject model responses.
     No jury scoring - that happens in Phase 2.
     """
-    load_dotenv()
+    load_dotenv(override=True)
 
     print("="*80)
     print(f"PHASE 1: COLLECTING {'FOR ' + target_model_name if target_model_name else 'ALL'} SUBJECT MODEL RESPONSES")
     print("="*80)
     
     # Check for existing results
-    results_dir = "results/raw_responses"
+    results_dir = "results/latest_results/raw_responses"
     os.makedirs(results_dir, exist_ok=True)
     
     completed_models = get_completed_models(results_dir)
@@ -81,7 +81,18 @@ def run_phase_1(target_model_name=None):
             print(f"\n⏭  SKIPPING {model_name} - already completed")
             continue
         
+        # Resume from partial results if they exist
         all_model_responses = []
+        completed_dilemma_ids = set()
+        partial_path = os.path.join(results_dir, f"{model_name}_raw_responses.json")
+        if os.path.exists(partial_path):
+            try:
+                with open(partial_path, "r") as f:
+                    all_model_responses = json.load(f)
+                completed_dilemma_ids = {d["dilemma_id"] for d in all_model_responses}
+                print(f"  ↻ Resuming {model_name} - {len(completed_dilemma_ids)}/10 dilemmas done")
+            except (json.JSONDecodeError, KeyError):
+                all_model_responses = []
 
         print(f"\n{'='*80}")
         print(f"▶ Collecting responses from: {model_name}")
@@ -96,6 +107,9 @@ def run_phase_1(target_model_name=None):
         
         # Collect responses for each dilemma
         for idx, dilemma in enumerate(dilemmas, 1):
+            if dilemma["id"] in completed_dilemma_ids:
+                print(f"\n  ⏭  Skipping {dilemma['id']} - already done")
+                continue
             print(f"\n  ┌─ Dilemma {idx}/{len(dilemmas)}: {dilemma['id']} ─┐")
             
             dilemma_responses = {
@@ -118,23 +132,25 @@ def run_phase_1(target_model_name=None):
                     
                 except Exception as e:
                     print(f"  │   ✗ ERROR at {comp_level}: {e}")
-                    # Save partial results
-                    if all_model_responses:
-                        output_path = os.path.join(results_dir, f"{model_name}_raw_responses_PARTIAL.json")
-                        with open(output_path, "w") as f:
-                            json.dump(all_model_responses, f, indent=2)
-                        print(f"  │   → Partial responses saved to {output_path}")
-                    raise
-
-            all_model_responses.append(dilemma_responses)
-            print(f"  └─ Completed {dilemma['id']} ─┘")
-        
-        # Save complete raw responses
+                    break
+            else:
+                # Only append if all compression levels succeeded
+                all_model_responses.append(dilemma_responses)
+                # Save after each dilemma so progress isn't lost
+                output_path = os.path.join(results_dir, f"{model_name}_raw_responses.json")
+                with open(output_path, "w") as f:
+                    json.dump(all_model_responses, f, indent=2)
+                print(f"  └─ Completed {dilemma['id']} ({idx}/{len(dilemmas)} saved) ─┘")
+                continue
+            # If we broke out of the compression loop, skip to next model
+            print(f"  └─ FAILED {dilemma['id']} - skipping rest of {model_name} ─┘")
+            break
         output_path = os.path.join(results_dir, f"{model_name}_raw_responses.json")
-        with open(output_path, "w") as f:
-            json.dump(all_model_responses, f, indent=2)
         print(f"\n{'='*80}")
-        print(f"✓ Raw responses for {model_name} saved to {output_path}")
+        if os.path.exists(output_path):
+            print(f"✓ Raw responses for {model_name} saved to {output_path}")
+        else:
+            print(f"⚠ {model_name} had errors - no complete results saved")
         print(f"{'='*80}")
 
     print("\n" + "="*80)

@@ -159,13 +159,13 @@ def run_full_test():
             "deployment_name": "Llama-4-Maverick-17B-128E-Instruct-FP8",
             "provider": "azure_ai",
             "api_key_env_var": "AZURE_API_KEY",
-            "endpoint_env_var": "DDFT_MODELS_ENDPOINT"
+            "endpoint_env_var": "FOUNDRY_MODELS_ENDPOINT"
         }
         agent = create_agent(llama4_config)
         print(f"✓ Created Llama-4 agent via Azure AI Foundry")
     except Exception as e:
         print(f"ERROR creating agent: {e}")
-        print("Check that AZURE_API_KEY and DDFT_MODELS_ENDPOINT are set in .env")
+        print("Check that AZURE_API_KEY and FOUNDRY_MODELS_ENDPOINT are set in .env")
         return
 
     # Create v2 evaluator

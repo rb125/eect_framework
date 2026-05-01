@@ -2,7 +2,7 @@ import os
 import json
 from typing import List, Dict, Optional
 
-def get_model_metrics(model_name: str, scored_dir: str = "results/scored", raw_dir: str = "results/raw_responses") -> Optional[Dict]:
+def get_model_metrics(model_name: str, scored_dir: str = "results/latest_results/scored", raw_dir: str = "results/latest_results/raw_responses") -> Optional[Dict]:
     """
     Reads the results directory, filters by the model name, 
     and returns aggregated metrics across all dilemmas.

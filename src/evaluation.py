@@ -53,7 +53,7 @@ class EECTEvaluator:
         # TODO: Implement actual jury evaluation with three judge models
         # For now, return placeholder scores
         # In full implementation, this would:
-        # 1. Send conversation to each jury agent (Claude Opus 4.1, GPT-5.1, DeepSeek-v3.1)
+        # 1. Send conversation to each jury agent (Qwen3-32B, GLM-5, Nemotron-Super-3-120B)
         # 2. Parse their scores for each metric
         # 3. Average the scores across judges
         return DharmaScores(
