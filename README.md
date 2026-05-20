@@ -1,5 +1,7 @@
 # The Action-Gating Test (AGT)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20315586.svg)](https://doi.org/10.5281/zenodo.20315586)
+
 Code and data for the paper: **"The Action-Gating Test: A Behavioral Diagnostic for Performative vs. Genuine Ethical Reasoning in Large Language Models"** (Baxi & Baxi, 2026).
 
 ## About
