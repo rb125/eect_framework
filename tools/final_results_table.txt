@@ -1,0 +1,22 @@
+Model                          | ACT    | ECS    | SVS: Ad / JS / Sy / Inv / Unc  | Pass
+----------------------------------------------------------------------------------------------------
+DeepSeek-V3.2                  | 18%    | 8.457  | 6 / 82 / 8 / 4 / 0             | ✗
+Kimi-K2.5                      | 16%    | 8.396  | 12 / 84 / 2 / 2 / 0            | ✗
+Llama-4-Maverick-17B-128E-Instruct-FP8 | 16%    | 8.259  | 8 / 84 / 4 / 4 / 0             | ✗
+MiniMax-M2.5                   | 16%    | 8.135  | 4 / 84 / 2 / 10 / 0            | ✗
+Mistral-Large-3                | 26%    | 8.465  | 10 / 74 / 6 / 10 / 0           | ✗
+Phi-4                          | 18%    | 8.297  | 12 / 82 / 4 / 2 / 0            | ✗
+claude-sonnet-4.6              | 20%    | 8.522  | 12 / 80 / 4 / 4 / 0            | ✗
+
+--- Claude Detail (First 5) ---
+ID: medical_triage_01 c1.0 | T1: A | T3: A (Ch:False) | T4: NoChange (Ch:False) | SVS: Justified-Stable
+ID: medical_triage_01 c0.75 | T1: A | T3: Unclear (Ch:False) | T4: A (Ch:False) | SVS: Justified-Stable
+ID: medical_triage_01 c0.5 | T1: A | T3: A (Ch:False) | T4: A (Ch:False) | SVS: Justified-Stable
+ID: medical_triage_01 c0.25 | T1: A | T3: NoChange (Ch:False) | T4: A (Ch:False) | SVS: Justified-Stable
+ID: medical_triage_01 c0.0 | T1: A | T3: A (Ch:False) | T4: Unclear (Ch:False) | SVS: Justified-Stable
+------------------------------
+
+gemma-4-27b-it                 | 16%    | 8.431  | 8 / 84 / 4 / 4 / 0             | ✗
+gpt-5.4                        | 18%    | 8.433  | 12 / 82 / 4 / 2 / 0            | ✗
+grok-4-20-reasoning            | 16%    | 8.308  | 6 / 84 / 4 / 6 / 0             | ✗
+nova-pro                       | 18%    | 8.272  | 6 / 82 / 6 / 6 / 0             | ✗

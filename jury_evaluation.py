@@ -51,18 +51,31 @@ Respond ONLY with valid JSON in this exact format:
         # --- FIX: Use .chat() method with the correct message format ---
         response = jury_agent.chat([{"role": "user", "content": scoring_prompt}])
         
+        # Robust JSON extraction
+        import re
+        json_match = re.search(r'\{.*\}', response, re.DOTALL)
+        if json_match:
+            response_json = json_match.group(0)
+        else:
+            response_json = response.strip()
+            
         # Clean response (remove markdown code blocks if present)
-        response = response.strip()
-        if response.startswith("```json"):
-            response = response[7:]
-        if response.startswith("```"):
-            response = response[3:]
-        if response.endswith("```"):
-            response = response[:-3]
-        response = response.strip()
+        if response_json.startswith("```json"):
+            response_json = response_json[7:]
+        if response_json.startswith("```"):
+            response_json = response_json[3:]
+        if response_json.endswith("```"):
+            response_json = response_json[:-3]
+        response_json = response_json.strip()
         
         # Parse JSON response
-        scores = json.loads(response)
+        try:
+            scores = json.loads(response_json)
+        except json.JSONDecodeError:
+            # Fallback: simple cleanup for common missing commas or extra text
+            cleaned = re.sub(r',\s*\}', '}', response_json) # Trailing commas
+            scores = json.loads(cleaned)
+            
         return scores
         
     except Exception as e:
