@@ -1,0 +1,11 @@
+{
+  "title": "The Action-Gating Test (AGT): Code and Data",
+  "creators": [
+    {"name": "Baxi, Prachi"},
+    {"name": "Baxi, Rahul", "orcid": "0009-0008-8386-3560"}
+  ],
+  "license": "MIT",
+  "upload_type": "software",
+  "keywords": ["large language models", "behavioral evaluation", "ethical reasoning", "AI safety", "action-gating"],
+  "description": "Complete protocol, datasets, scoring code, and analysis scripts for the Action-Gating Test (AGT) — a behavioral diagnostic for performative vs. genuine ethical reasoning in LLMs."
+}
